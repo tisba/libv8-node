@@ -278,7 +278,7 @@ jobs:
     steps:
       - name: Install Alpine system dependencies
         if: ${{ matrix.container.libc == 'musl' }}
-        run: apk add --no-cache build-base linux-headers bash python3 git curl tar
+        run: apk add --no-cache build-base linux-headers bash python3 git curl tar tzdata
       - name: Update Rubygems and Bundler
         run: |
           gem update --system 3.3.26
@@ -389,7 +389,7 @@ jobs:
           echo "::set-output name=id::$(cat container_id)"
       - name: Install Alpine system dependencies
         if: ${{ matrix.libc == 'musl' }}
-        run: docker exec -w "${PWD}" ${{ steps.container.outputs.id }} apk add --no-cache build-base git libstdc++
+        run: docker exec -w "${PWD}" ${{ steps.container.outputs.id }} apk add --no-cache build-base git libstdc++ tzdata
       - name: Update Rubygems and Bundler
         run: |
           docker exec -w "${PWD}" ${{ steps.container.outputs.id }} gem update --system 3.3.26
