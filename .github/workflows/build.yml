@@ -73,18 +73,13 @@ jobs:
           name: gem-${{ steps.set-metadata.outputs.GEM_VERSION  }}-ruby
           path: pkg
   build-darwin:
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - arm64
-    name: Build (darwin)
+    name: Build (darwin) (arm64)
     outputs:
       GEM_VERSION: ${{ steps.set-metadata.outputs.GEM_VERSION }}
     runs-on: macos-15-xlarge
     env:
-      TARGET_PLATFORM: ${{ matrix.platform }}-darwin
-      RUBY_TARGET_PLATFORM: ${{ matrix.platform }}-darwin
+      TARGET_PLATFORM: arm64-darwin
+      RUBY_TARGET_PLATFORM: arm64-darwin
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -122,14 +117,15 @@ jobs:
       - name: Inject V8
         run: |
             ./libexec/inject-libv8 ${{ steps.set-metadata.outputs.NODE_VERSION }}
-      - name: Test V8 in C++
-        if: matrix.platform != 'arm64'
-        run: |
-            cd test/gtest
-            cmake -S . -B build
-            cd build
-            cmake --build .
-            ./c_v8_tests
+      # FIXME: Why did we start skipping those tests since node-18?
+      #        See https://github.com/rubyjs/libv8-node/pull/46
+      # - name: Test V8 in C++
+      #   run: |
+      #       cd test/gtest
+      #       cmake -S . -B build
+      #       cd build
+      #       cmake --build .
+      #       ./c_v8_tests
       - name: Build binary gem
         run: |
             bundle exec rake binary
@@ -261,6 +257,8 @@ jobs:
       - name: Inject V8
         run: |
             docker exec -w "${PWD}" ${{ steps.container.outputs.id }} ./libexec/inject-libv8 ${{ steps.set-metadata.outputs.NODE_VERSION }}
+      # FIXME: Why did we start skipping those tests since node-18?
+      #        See https://github.com/rubyjs/libv8-node/pull/46
       - name: Test V8 in C++
         if: matrix.platform != 'arm64'
         run: |
