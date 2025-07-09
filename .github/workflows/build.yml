@@ -151,9 +151,7 @@ jobs:
           # s390x
         libc:
           - gnu
-        include:
-          - platform: amd64
-            libc: musl
+          - musl
     name: Build (linux)
     outputs:
       GEM_VERSION: ${{ steps.set-metadata.outputs.GEM_VERSION }}
