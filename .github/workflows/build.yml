@@ -312,7 +312,7 @@ jobs:
         platform:
           - x86_64
           # arm64
-    name: Test (darwin)
+    name: Test (darwin) (arm64)
     needs: build-darwin
     runs-on: macos-15-xlarge
     steps:
