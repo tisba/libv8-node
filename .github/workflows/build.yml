@@ -76,7 +76,7 @@ jobs:
     name: Build (darwin) (arm64)
     outputs:
       GEM_VERSION: ${{ steps.set-metadata.outputs.GEM_VERSION }}
-    runs-on: macos-15-xlarge
+    runs-on: macos-15 #-xlarge
     env:
       TARGET_PLATFORM: arm64-darwin
       RUBY_TARGET_PLATFORM: arm64-darwin
