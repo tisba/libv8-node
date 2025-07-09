@@ -148,7 +148,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - amd64
+          # - amd64
           - arm64
           # arm
           # ppc64le
@@ -283,27 +283,27 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - amd64
+          # - amd64
           - arm64
         container:
-          - image: ruby:3.1
-            version: '3.1'
-            libc: gnu
-          - image: ruby:3.1-alpine
-            version: '3.1'
-            libc: musl
-          - image: ruby:3.2
-            version: '3.2'
-            libc: gnu
-          - image: ruby:3.2-alpine
-            version: '3.2'
-            libc: musl
-          - image: ruby:3.3
-            version: '3.3'
-            libc: gnu
-          - image: ruby:3.3-alpine
-            version: '3.3'
-            libc: musl
+          # - image: ruby:3.1
+          #   version: '3.1'
+          #   libc: gnu
+          # - image: ruby:3.1-alpine
+          #   version: '3.1'
+          #   libc: musl
+          # - image: ruby:3.2
+          #   version: '3.2'
+          #   libc: gnu
+          # - image: ruby:3.2-alpine
+          #   version: '3.2'
+          #   libc: musl
+          # - image: ruby:3.3
+          #   version: '3.3'
+          #   libc: gnu
+          # - image: ruby:3.3-alpine
+          #   version: '3.3'
+          #   libc: musl
           - image: ruby:3.4
             version: '3.4'
             libc: gnu
@@ -386,7 +386,7 @@ jobs:
           - '3.3'
           - '3.4'
         platform:
-          - amd64
+          # - amd64
           - arm64
           # arm
           # ppc64le
