@@ -355,19 +355,6 @@ jobs:
         libc:
           - gnu
           - musl
-        include:
-          - version: '3.1'
-            platform: 'arm64'
-            libc: 'gnu'
-          - version: '3.2'
-            platform: 'arm64'
-            libc: 'gnu'
-          - version: '3.3'
-            platform: 'arm64'
-            libc: 'gnu'
-          - version: '3.4'
-            platform: 'arm64'
-            libc: 'gnu'
     name: Test (linux)
     needs: build-linux
     runs-on: ${{ matrix.platform == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
