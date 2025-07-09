@@ -414,4 +414,4 @@ jobs:
           ruby -i -ne '$_ =~ /spec.required_ruby_version/ ? "" : print' mini_racer.gemspec
           docker exec -w "${PWD}" ${{ steps.container.outputs.id }} bundle install
           docker exec -w "${PWD}" ${{ steps.container.outputs.id }} bundle exec rake compile
-          docker exec -w "${PWD}" ${{ steps.container.outputs.id }} bundle exec rake test
+          docker exec -w "${PWD}" ${{ steps.container.outputs.id }} bundle exec rake test --trace
