@@ -76,17 +76,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # NOTE: For macOS runners, the architecture depends on the "size"
+        #       arm64: macos-15 or macos-15-xlarge
+        #       x86: macos-15-large
+        #       See https://github.com/actions/runner-images
         platform:
-          - x86_64
-          # arm64
-    name: Build (darwin) (arm64)
+          - arch: x86_64
+            runner: macos-15-large
+          - arch: arm64
+            runner: macos-15 # or macos-15-xlarge
+    name: Build (darwin) (${{ matrix.platform.arch }})
     outputs:
       GEM_VERSION: ${{ steps.set-metadata.outputs.GEM_VERSION }}
-    # intel: macos-15-large, arm: macos-15 or macos-15-xlarge
-    runs-on: macos-15 #-xlarge
+    runs-on: ${{ matrix.platform.runner }}
     env:
-      TARGET_PLATFORM: arm64-darwin
-      RUBY_TARGET_PLATFORM: arm64-darwin
+      TARGET_PLATFORM: ${{ matrix.platform.arch }}-darwin
+      RUBY_TARGET_PLATFORM: ${{ matrix.platform.arch }}-darwin
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -318,13 +323,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # NOTE: For macOS runners, the architecture depends on the "size"
+        #       arm64: macos-15 or macos-15-xlarge
+        #       x86: macos-15-large
+        #       See https://github.com/actions/runner-images
         platform:
-          - x86_64
-          # arm64
-    name: Test (darwin)
+          - arch: x86_64
+            runner: macos-15-large
+          - arch: arm64
+            runner: macos-15 # or macos-15-xlarge
+    name: Test (darwin) (${{ matrix.platform.arch }})
     needs: build-darwin
-    # intel: macos-15-large, arm: macos-15 or macos-15-xlarge
-    runs-on: macos-15-xlarge
+    runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Set metadata
         id: set-metadata
