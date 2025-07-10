@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+set -u
+
+if [ -z "${LIBV8_NODE_VERSION:-}" ]; then
+  echo "Error: LIBV8_NODE_VERSION is not set or is empty."
+  exit 1
+fi
+
+git clone https://github.com/rubyjs/mini_racer.git test/mini_racer --depth 1
+cd test/mini_racer
+
+ruby -i -ne '$_ =~ /^\s+LIBV8_NODE_VERSION/ ? print("  LIBV8_NODE_VERSION = \"#{ENV["LIBV8_NODE_VERSION"]}\"\n") : print' lib/mini_racer/version.rb
+ruby -i -ne '$_ =~ /spec.required_ruby_version/ ? "" : print' mini_racer.gemspec
+
+BUNDLE_FORCE_RUBY_PLATFORM=y bundle install
+bundle exec rake compile
+
+# Run mini racer test suite
+VERBOSE_MINITEST=true bundle exec rake test
+
+# Run mini racer minimal smoke test
+ruby test/smoke/minimal.rb

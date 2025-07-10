@@ -274,37 +274,37 @@ jobs:
     name: Test (ruby) (${{ matrix.container.version }}, ${{ matrix.platform }}, ${{ matrix.container.libc }})
     needs: build-ruby
     runs-on: ${{ matrix.platform == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
-    container: ${{ matrix.container.image }}
     steps:
+      - name: Start container
+        id: container
+        run: |
+          docker run --rm -d -v "${PWD}":"${PWD}" -w "${PWD}" ${{ matrix.container.image }} /bin/sleep 64d | tee container_id
+          docker exec $(cat container_id) uname -a
+          echo "id=$(cat container_id)" >> $GITHUB_OUTPUT
       - name: Install Alpine system dependencies
         if: ${{ matrix.container.libc == 'musl' }}
-        run: apk add --no-cache build-base linux-headers bash python3 git curl tar tzdata
+        run: |
+          docker exec ${{ steps.container.outputs.id }} apk add --no-cache build-base linux-headers bash python3 git curl tar tzdata
       - name: Update Rubygems and Bundler
         run: |
-          gem update --system 3.3.26
-          gem install bundler -v '~> 2.3.26'
+          docker exec ${{ steps.container.outputs.id }} gem update --system 3.3.26
+          docker exec ${{ steps.container.outputs.id }} gem install bundler -v '~> 2.3.26'
       - name: Set metadata
         id: set-metadata
         run: |
-            ruby -e 'puts Gem.platforms.last.to_s' | tee gem_platform
-            echo "::set-output name=GEM_PLATFORM::$(cat gem_platform)"
+            docker exec ${{ steps.container.outputs.id }} ruby -e 'puts Gem.platforms.last.to_s' | tee gem_platform
+            echo "GEM_PLATFORM=$(cat gem_platform)"
       - name: Download a single artifact
         uses: actions/download-artifact@v4
         with:
           name: gem-${{ needs.build-ruby.outputs.GEM_VERSION }}-ruby
           path: pkg
       - name: Install gem
-        run: gem install --verbose pkg/libv8-node-${{ needs.build-ruby.outputs.GEM_VERSION }}.gem
+        run: |
+          docker exec ${{ steps.container.outputs.id }} gem install --verbose pkg/libv8-node-${{ needs.build-ruby.outputs.GEM_VERSION }}.gem
       - name: Test with mini_racer
         run: |
-          export BUNDLE_FORCE_RUBY_PLATFORM=y
-          git clone https://github.com/rubyjs/mini_racer.git test/mini_racer --depth 1
-          cd test/mini_racer
-          ruby -i -ne '$_ =~ /^\s+LIBV8_NODE_VERSION/ ? print("  LIBV8_NODE_VERSION = \"${{ needs.build-ruby.outputs.GEM_VERSION }}\"\n") : print' lib/mini_racer/version.rb
-          ruby -i -ne '$_ =~ /spec.required_ruby_version/ ? "" : print' mini_racer.gemspec
-          bundle install
-          bundle exec rake compile
-          VERBOSE_MINITEST=true bundle exec rake test
+          docker exec -e GEM_VERSION=${{ needs.build-ruby.outputs.GEM_VERSION }} ${{ steps.container.outputs.id }} test/mini_racer_integration
   test-darwin:
     strategy:
       fail-fast: false
