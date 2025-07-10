@@ -304,7 +304,10 @@ jobs:
           docker exec ${{ steps.container.outputs.id }} gem install --verbose pkg/libv8-node-${{ needs.build-ruby.outputs.GEM_VERSION }}.gem
       - name: Test with mini_racer
         run: |
-          docker exec -e GEM_VERSION=${{ needs.build-ruby.outputs.GEM_VERSION }} ${{ steps.container.outputs.id }} test/mini_racer_integration
+          pwd
+          ls -la
+          ls -la test/mini_racer_integration
+          docker exec -e LIBV8_NODE_VERSION=${{ needs.build-ruby.outputs.GEM_VERSION }} ${{ steps.container.outputs.id }} test/mini_racer_integration
   test-darwin:
     strategy:
       fail-fast: false
