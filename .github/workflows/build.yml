@@ -328,8 +328,8 @@ jobs:
         #       x86: macos-15-large
         #       See https://github.com/actions/runner-images
         platform:
-          - arch: x86_64
-            runner: macos-15-large
+          # - arch: x86_64
+          #   runner: macos-15-large
           - arch: arm64
             runner: macos-15 # or macos-15-xlarge
     name: Test (darwin) (${{ matrix.platform.arch }})
