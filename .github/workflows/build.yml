@@ -348,6 +348,8 @@ jobs:
           path: pkg
       - name: Install gem
         run: gem install pkg/libv8-node-${{ needs.build-darwin.outputs.GEM_VERSION }}-${{ steps.set-metadata.outputs.GEM_PLATFORM }}.gem
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Test with mini_racer
         run: |
           LIBV8_NODE_VERSION=${{ needs.build-darwin.outputs.GEM_VERSION }} test/mini_racer_integration
@@ -407,6 +409,8 @@ jobs:
           path: pkg
       - name: Install gem
         run: docker exec -w "${PWD}" ${{ steps.container.outputs.id }} gem install pkg/libv8-node-${{ needs.build-linux.outputs.GEM_VERSION }}-${{ steps.set-metadata.outputs.GEM_PLATFORM }}.gem
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Test with mini_racer
         run: |
           docker exec -e LIBV8_NODE_VERSION=${{ needs.build-linux.outputs.GEM_VERSION }} ${{ steps.container.outputs.id }} test/mini_racer_integration
