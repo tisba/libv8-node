@@ -1,7 +1,6 @@
 #!/bin/sh
 
-set -e
-set -u
+set -eux
 
 if [ -z "${LIBV8_NODE_VERSION:-}" ]; then
   echo "Error: LIBV8_NODE_VERSION is not set or is empty."
@@ -14,7 +13,7 @@ cd test/mini_racer
 ruby -i -ne '$_ =~ /^\s+LIBV8_NODE_VERSION/ ? print("  LIBV8_NODE_VERSION = \"#{ENV["LIBV8_NODE_VERSION"]}\"\n") : print' lib/mini_racer/version.rb
 ruby -i -ne '$_ =~ /spec.required_ruby_version/ ? "" : print' mini_racer.gemspec
 
-BUNDLE_FORCE_RUBY_PLATFORM=y bundle install
+bundle install
 bundle exec rake compile
 
 # Run mini racer test suite
